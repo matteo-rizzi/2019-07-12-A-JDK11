@@ -5,8 +5,10 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,7 +43,7 @@ public class FoodController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxFood"
-    private ComboBox<?> boxFood; // Value injected by FXMLLoader
+    private ComboBox<Food> boxFood; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -49,13 +51,36 @@ public class FoodController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Creazione grafo...");
+    	txtResult.appendText("Creazione grafo...\n\n");
+    	
+    	try {
+    		int numeroPorzioni = Integer.parseInt(this.txtPorzioni.getText());
+    		this.model.creaGrafo(numeroPorzioni);
+    		this.txtResult.appendText(String.format("GRAFO CREATO! Sono presenti %d VERTICI e %d ARCHI.\n", this.model.nVertici(), this.model.nArchi()));
+    		
+    		this.boxFood.getItems().clear();
+    		this.boxFood.getItems().addAll(this.model.vertici());
+    	} catch(NumberFormatException e) {
+    		this.txtResult.appendText("Errore! Nella casella di testo 'Porzioni' va inserito un valore numerico intero!\n");
+    		return;
+    	}
     }
     
     @FXML
     void doCalorie(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Analisi calorie...");
+    	txtResult.appendText("Analisi calorie...\n\n");
+    	
+    	Food selezionato = this.boxFood.getValue();
+    	if(selezionato == null) {
+    		this.txtResult.appendText("Errore! Non hai selezionato alcun cibo!\n");
+    		return;
+    	}
+    	
+    	Map<Food, Double> max = this.model.calorieCongiunteMassime(selezionato);
+    	for(Food f : max.keySet()) {
+    		this.txtResult.appendText(String.format("%s %.2f\n", f.toString(), max.get(f)));
+    	}
     }
 
     @FXML
