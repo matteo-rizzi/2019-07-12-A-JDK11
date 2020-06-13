@@ -110,7 +110,7 @@ public class FoodDao {
 	}
 	
 	public List<Food> getFoodByPortions(int numeroPorzioni, Map<Integer, Food> idMap) {
-		String sql = "SELECT food_code FROM `portion` GROUP BY food_code HAVING COUNT(portion_id) <= ?";
+		String sql = "SELECT food_code FROM `portion` GROUP BY food_code HAVING COUNT(portion_id) = ?";
 		try {
 			Connection conn = DBConnect.getConnection() ;
 

@@ -59,8 +59,8 @@ public class Model {
 		}
 		
 		Collections.sort(adiacentiSelezionato);
-		for(int i = 0; i < 5 && i < adiacentiSelezionato.size(); i ++) {
-			max.put(adiacentiSelezionato.get(i).getSecond(), adiacentiSelezionato.get(i).getPeso());
+		for(Adiacenza a : adiacentiSelezionato) {
+			max.put(a.getSecond(), a.getPeso());
 		}
 		
 		return max;
@@ -76,6 +76,15 @@ public class Model {
 	
 	public Set<Food> vertici() {
 		return this.grafo.vertexSet();
+	}
+	
+	public String simula(Food cibo, int K) {
+		Simulator sim = new Simulator(this.grafo, this);
+		sim.setK(K);
+		sim.init(cibo);
+		sim.run();
+		String messaggio = String.format("Preparati %d cibi in %f minuti\n", sim.getCibiPreparati(), sim.getTempoTotalePreparazione());
+		return messaggio;
 	}
 
 }

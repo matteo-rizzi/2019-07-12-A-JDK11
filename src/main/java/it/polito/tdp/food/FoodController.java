@@ -78,15 +78,41 @@ public class FoodController {
     	}
     	
     	Map<Food, Double> max = this.model.calorieCongiunteMassime(selezionato);
+    	int i = 0;
     	for(Food f : max.keySet()) {
-    		this.txtResult.appendText(String.format("%s %.2f\n", f.toString(), max.get(f)));
+    		if(i < 5)
+    			this.txtResult.appendText(String.format("%s %.2f\n", f.toString(), max.get(f)));
+    		else
+    			return;
+    		i++;
     	}
     }
 
     @FXML
     void doSimula(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Simulazione...");
+    	txtResult.appendText("Simulazione...\n\n");
+    	
+    	Food selezionato = this.boxFood.getValue();
+    	if(selezionato == null) {
+    		this.txtResult.appendText("Errore! Non hai selezionato alcun cibo!\n");
+    		return;
+    	}
+    	
+    	int K;
+    	try {
+    		K = Integer.parseInt(this.txtK.getText());
+    		if(K < 1 || K > 10) {
+    			this.txtResult.appendText("Errore! K deve essere un numero compreso tra 1 e 10!\n");
+    			return;
+    		}
+    	} catch(NumberFormatException e) {
+    		this.txtResult.appendText("Errore! K deve essere un numero\n");
+    		return;
+    	}
+    	
+    	String messaggio = model.simula(selezionato, K);
+    	this.txtResult.appendText(messaggio);
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
